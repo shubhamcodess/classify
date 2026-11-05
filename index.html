@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0c0c0b" />
-    <title>classify</title>
-    <meta name="description" content="Classify any data in your browser. Teach it with a few examples, upload CSV, Excel, JSON or logs, and watch every row get labelled live. Nothing is uploaded." />
+    <title>classify: decisions for every row of your file</title>
+    <meta name="description" content="Teach it your categories and decisions with a few examples. It goes through your spreadsheet row by row, fills in the answers and flags what a person should check. Runs in your browser; nothing is uploaded." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <script>
       (function () {
@@ -19,123 +19,60 @@
         }
       })();
     </script>
+    <!-- Linked, not imported from JS, so styles block rendering and nothing flashes unstyled. -->
+    <link rel="stylesheet" href="/src/style.css" />
     <script type="module" src="/src/main.js"></script>
   </head>
   <body>
-    <div class="bgfield" aria-hidden="true"><canvas></canvas></div>
     <header class="nav">
       <div class="nav__row">
-        <a class="brand" href="#top"><img class="brand__mark" src="/favicon.svg" alt="" width="24" height="24" /><span>classify</span></a>
+        <a class="brand" href="#/" aria-label="classify home"><img class="logo" src="/favicon.svg" width="26" height="26" alt="" /><span>classify</span></a>
         <nav class="nav__links" aria-label="Main">
-          <span class="nav__anchors">
-            <a href="#teach">Teach</a><a href="#data">Data</a><a href="#results">Results</a>
-            <span class="nav__sep" aria-hidden="true"></span>
-          </span>
-          <a href="https://github.com/shubhamcodess/classify" aria-label="classify on GitHub">
-            <svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          <a class="nav__l hide-s" href="#/#how">How it works</a>
+          <a class="nav__l hide-s" href="#/#examples">Examples</a>
+          <a class="star" href="https://github.com/shubhamcodess/classify" target="_blank" rel="noopener" aria-label="Star classify on GitHub">
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Star</span><svg class="star__s" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
           </a>
+          <a class="nav__btn" href="#/app">Open app</a>
           <button type="button" class="theme" aria-label="Switch colour theme">
-            <svg class="theme__sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-            <svg class="theme__moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            <svg class="theme__sun" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg class="theme__moon" width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
           </button>
         </nav>
       </div>
     </header>
 
-    <main class="frame" id="top">
-      <section class="intro">
-        <div>
-          <h1>Teach it five examples. <span class="hl">Label everything else.</span></h1>
-          <p class="intro__sub">Labels and a few examples in, any CSV, Excel, JSON or log file classified live. Runs entirely in your browser.</p>
-        </div>
-        <div class="presets">
-          <span class="cap">start from</span>
-          <button class="chip" data-preset="logs">Log severity</button>
-          <button class="chip" data-preset="tickets">Support tickets</button>
-          <button class="chip" data-preset="sentiment">Review sentiment</button>
-          <button class="chip" data-preset="blank">Blank</button>
-        </div>
-      </section>
+    <main id="view" class="view" ></main>
 
-      <div class="ws">
-        <!-- 1. TEACH -->
-        <section class="pane" id="teach" aria-label="Teach">
-          <header class="pane__head"><span class="step" data-step="1">1</span><h2>Teach</h2><span class="cap pane__meta" data-saved>saved in this browser</span></header>
-          <div class="pane__body">
-            <div class="labels" data-labels></div>
-            <button type="button" class="add" data-add-label>+ Add label</button>
-            <p class="cap hint">Keywords are hard rules: a row containing one leans strongly to that label.</p>
-          </div>
-        </section>
-
-        <!-- 2 + 3. DATA & RESULTS -->
-        <section class="pane pane--main" id="data" aria-label="Data and results" data-drop>
-          <header class="pane__head">
-            <span class="step" data-step="2">2</span><h2>Data</h2>
-            <div class="toolbar">
-              <label class="tb tb--solid">Upload file<input type="file" data-file hidden accept=".csv,.tsv,.tab,.xlsx,.xlsm,.xls,.ods,.json,.jsonl,.ndjson,.log,.txt,text/*" /></label>
-              <button class="tb" data-sample>Sample</button>
-              <button class="tb" data-paste-toggle>Paste</button>
-            </div>
-          </header>
-          <div class="paste" data-paste hidden>
-            <textarea class="input" rows="4" data-paste-text placeholder="One item per line…"></textarea>
-            <button class="tb tb--solid" data-paste-go>Classify pasted text</button>
-          </div>
-          <div class="dataset" data-dataset hidden>
-            <b data-ds-name></b><span class="cap" data-ds-meta></span>
-            <span class="cap dataset__sep">classify using</span><span class="cols" data-cols></span>
-          </div>
-
-          <div class="empty" data-empty>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0l-4 4m4-4l4 4M5 15v3a2 2 0 002 2h10a2 2 0 002-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <b>Drop a file anywhere here</b>
-            <span class="cap">CSV · TSV · Excel · JSON · JSONL · logs · text. Nothing leaves this tab.</span>
-          </div>
-
-          <div class="results" data-results hidden>
-            <div class="results__top">
-              <span class="step" data-step="3">3</span><h2>Results</h2>
-              <span class="cap" data-progress-text></span>
-              <div class="toolbar">
-                <label class="cap toggle"><input type="checkbox" data-unsure /> unsure only</label>
-                <button class="tb" data-dl="csv">CSV ↓</button>
-                <button class="tb" data-dl="json">JSON ↓</button>
-              </div>
-            </div>
-            <div class="progress"><i data-progress></i></div>
-            <div class="dist" data-dist></div>
-            <div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>text</th><th>label</th><th>confidence</th></tr></thead><tbody data-rows></tbody></table><p class="cap table__note" data-note></p></div>
-          </div>
-        </section>
-
-        <!-- INSPECTOR -->
-        <aside class="pane" aria-label="Model and explanation">
-          <header class="pane__head"><span class="step step--dot"></span><h2>Model</h2></header>
-          <div class="pane__body">
-            <dl class="stats" data-stats></dl>
-            <div class="try">
-              <input id="try" class="input" data-try placeholder="Try a sentence…" autocomplete="off" />
-              <div class="card" data-try-out></div>
-            </div>
-            <div class="card why" data-why><p class="cap">Select a row to see why it got its label.</p></div>
-            <div class="learned" data-learned></div>
-            <div class="row-btns">
-              <button class="tb" data-export>Export model</button>
-              <label class="tb">Import<input type="file" accept=".json" data-import hidden /></label>
-            </div>
-          </div>
-        </aside>
-      </div>
-    </main>
-
-    <footer class="frame foot-wrap">
+    <footer class="foot-wrap" id="foot">
       <div class="foot">
-        <span>classify runs entirely in your browser: Naive Bayes over words, word pairs and character trigrams, plus your keyword rules. No server, no upload.</span>
+        <div class="foot__about">
+          <a class="brand" href="#/"><img class="logo" src="/favicon.svg" width="26" height="26" alt="" /><span>classify</span></a>
+          <p>Fills in decisions and flags what a person should check. Your files stay in your browser. Provided as-is under the MIT license; check anything that matters.</p>
+        </div>
+        <div class="foot__col"><h3>Project</h3>
+          <a href="https://github.com/shubhamcodess/classify" target="_blank" rel="noopener">Source on GitHub</a>
+          <a href="#/#how">How it works</a>
+          <a href="#/#examples">Examples</a>
+          <a href="#/app/models">Models and accuracy</a>
+        </div>
+        <div class="foot__col"><h3>Contribute</h3>
+          <a href="https://github.com/shubhamcodess/classify/issues/new" target="_blank" rel="noopener">Report a bug or wrong decision</a>
+          <a href="https://github.com/shubhamcodess/classify/issues" target="_blank" rel="noopener">Open issues</a>
+          <a href="https://github.com/shubhamcodess/classify/blob/main/LICENSE" target="_blank" rel="noopener">MIT license</a>
+        </div>
+        <div class="foot__col"><h3>Built with</h3>
+          <span>Vite, vanilla JS</span>
+          <span>Transformers.js, ONNX Runtime</span>
+          <span>bge-small-en-v1.5</span>
+          <span>Laya, by Convai Innovations</span>
+        </div>
+      </div>
+      <div class="foot__base">
+        <span>© 2026 Shubham Prakash</span>
         <ul>
-          <li><a href="https://github.com/shubhamcodess/classify">GitHub</a></li>
-          <li><a href="https://github.com/shubhamcodess/classify/issues/new">Report an issue</a></li>
-          <li><a href="https://www.linkedin.com/in/shubham-prakash-dev/">LinkedIn</a></li>
+          <li><a href="https://github.com/shubhamcodess" target="_blank" rel="noopener">GitHub</a></li>
+          <li><a href="https://www.linkedin.com/in/shubham-prakash-dev/" target="_blank" rel="noopener">LinkedIn</a></li>
         </ul>
       </div>
     </footer>

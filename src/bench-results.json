@@ -1,0 +1,545 @@
+{
+  "generatedAt": "2026-11-05",
+  "laya": "convaiinnovations/laya-typed-decisions",
+  "decisions": {
+    "dev": {
+      "n": 30,
+      "words": 60,
+      "hybrid": 86.7,
+      "layaMsPerRow": 133,
+      "laya": 70,
+      "all": 93.3,
+      "coverage": [
+        {
+          "threshold": 0.6,
+          "autoDecided": 76.7,
+          "accuracy": 91.3
+        },
+        {
+          "threshold": 0.8,
+          "autoDecided": 46.7,
+          "accuracy": 100
+        }
+      ]
+    },
+    "test": {
+      "n": 45,
+      "words": 73.3,
+      "hybrid": 80,
+      "layaMsPerRow": 135,
+      "laya": 71.1,
+      "all": 86.7,
+      "coverage": [
+        {
+          "threshold": 0.6,
+          "autoDecided": 77.8,
+          "accuracy": 88.6
+        },
+        {
+          "threshold": 0.8,
+          "autoDecided": 53.3,
+          "accuracy": 95.8
+        }
+      ]
+    }
+  },
+  "categories": {
+    "logs": {
+      "n": 30,
+      "words": 53.3,
+      "hybrid": 70,
+      "layaMsPerRow": 94,
+      "laya": 76.7,
+      "all": 70,
+      "coverage": [
+        {
+          "threshold": 0.6,
+          "autoDecided": 70,
+          "accuracy": 81
+        },
+        {
+          "threshold": 0.8,
+          "autoDecided": 36.7,
+          "accuracy": 81.8
+        }
+      ]
+    },
+    "tickets": {
+      "n": 29,
+      "words": 82.8,
+      "hybrid": 89.7,
+      "layaMsPerRow": 94,
+      "laya": 86.2,
+      "all": 93.1,
+      "coverage": [
+        {
+          "threshold": 0.6,
+          "autoDecided": 86.2,
+          "accuracy": 96
+        },
+        {
+          "threshold": 0.8,
+          "autoDecided": 75.9,
+          "accuracy": 100
+        }
+      ]
+    },
+    "sentiment": {
+      "n": 18,
+      "words": 55.6,
+      "hybrid": 94.4,
+      "layaMsPerRow": 73,
+      "laya": 88.9,
+      "all": 100,
+      "coverage": [
+        {
+          "threshold": 0.6,
+          "autoDecided": 100,
+          "accuracy": 100
+        },
+        {
+          "threshold": 0.8,
+          "autoDecided": 72.2,
+          "accuracy": 100
+        }
+      ]
+    }
+  },
+  "examples": {
+    "support": {
+      "name": "Support ticket triage",
+      "rows": [
+        {
+          "text": "I got charged two times for the annual plan",
+          "category": "billing",
+          "category_confidence": "1.00",
+          "decision": "Refund",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"I was charged twice this month, please give the money back\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "The upload page freezes at 99% and never finishes",
+          "category": "bug",
+          "category_confidence": "1.00",
+          "decision": "Escalate to a person",
+          "decision_confidence": "1.00",
+          "decided_by": "rule",
+          "reason": "Rule: category is bug and plan is enterprise",
+          "needs_review": "no"
+        },
+        {
+          "text": "Forgot my password and the reset link is expired",
+          "category": "account",
+          "category_confidence": "0.99",
+          "decision": "Reply with help article",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"how do I reset my password\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Would love a Slack integration for alerts",
+          "category": "feature request",
+          "category_confidence": "0.93",
+          "decision": "Add to backlog",
+          "decision_confidence": "0.96",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"A request for new functionality that does not exist yet.\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Where can I find the invoice for my last payment?",
+          "category": "billing",
+          "category_confidence": "1.00",
+          "decision": "Reply with help article",
+          "decision_confidence": "0.95",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"where can I download my invoices\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Charts render blank after the latest update",
+          "category": "bug",
+          "category_confidence": "1.00",
+          "decision": "Send to engineering",
+          "decision_confidence": "0.97",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"dashboard totals are wrong since the last update\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "How do I turn off two factor? I changed phones",
+          "category": "account",
+          "category_confidence": "1.00",
+          "decision": "Reply with help article",
+          "decision_confidence": "0.88",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"how do I reset my password\"; Laya agrees",
+          "needs_review": "no"
+        },
+        {
+          "text": "Please add keyboard shortcuts for the editor",
+          "category": "feature request",
+          "category_confidence": "0.99",
+          "decision": "Add to backlog",
+          "decision_confidence": "0.96",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"feature idea: bulk edit for tags\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Requesting a refund, we paid twice for the yearly licence",
+          "category": "billing",
+          "category_confidence": "0.99",
+          "decision": "Escalate to a person",
+          "decision_confidence": "1.00",
+          "decided_by": "rule",
+          "reason": "Rule: category is billing and amount > 500",
+          "needs_review": "no"
+        },
+        {
+          "text": "API returns error 500 when the name has emoji",
+          "category": "bug",
+          "category_confidence": "0.99",
+          "decision": "Escalate to a person",
+          "decision_confidence": "1.00",
+          "decided_by": "rule",
+          "reason": "Rule: category is bug and plan is enterprise",
+          "needs_review": "no"
+        },
+        {
+          "text": "Can I change the email address on my login?",
+          "category": "account",
+          "category_confidence": "1.00",
+          "decision": "Reply with help article",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"how do I change the email on my account\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "It would be great to export dashboards as PDF",
+          "category": "feature request",
+          "category_confidence": "1.00",
+          "decision": "Add to backlog",
+          "decision_confidence": "0.98",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"please add an API for exporting reports\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Our legal team will get involved if our data is not restored today",
+          "category": "feature request",
+          "category_confidence": "0.41",
+          "decision": "Escalate to a person",
+          "decision_confidence": "0.98",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"our lawyer will contact you if this is not resolved\"",
+          "needs_review": "yes"
+        },
+        {
+          "text": "Someone I don't know is logged in to our account",
+          "category": "account",
+          "category_confidence": "0.99",
+          "decision": "Escalate to a person",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"someone logged into my account and changed my details without permission\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "hmm it's kind of weird lately",
+          "category": "bug",
+          "category_confidence": "0.77",
+          "decision": "Send to engineering",
+          "decision_confidence": "0.47",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"Something in the product is broken and needs a fix.\"; Laya agrees",
+          "needs_review": "yes"
+        }
+      ]
+    },
+    "logs": {
+      "name": "Log triage",
+      "rows": [
+        {
+          "text": "2026-11-05T10:00:01Z INFO api started on port 3000",
+          "category": "info",
+          "category_confidence": "1.00",
+          "decision": "Ignore",
+          "decision_confidence": "0.99",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"server started on port 8080\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:04Z INFO user 5521 logged in from 10.0.0.12",
+          "category": "info",
+          "category_confidence": "1.00",
+          "decision": "Ignore",
+          "decision_confidence": "0.99",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"user 1042 logged in\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:09Z WARN response time 1800ms on /search",
+          "category": "warning",
+          "category_confidence": "0.86",
+          "decision": "Open a ticket",
+          "decision_confidence": "0.77",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"slow query took 2400ms\"; Laya preferred Ignore",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:12Z ERROR redis connection refused, falling back to db",
+          "category": "error",
+          "category_confidence": "1.00",
+          "decision": "Page on-call",
+          "decision_confidence": "0.99",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"db connection refused after 3 retries\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:15Z INFO cache warmed in 230ms",
+          "category": "info",
+          "category_confidence": "0.55",
+          "decision": "Open a ticket",
+          "decision_confidence": "0.70",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"slow query took 2400ms\"; Laya preferred Ignore",
+          "needs_review": "yes"
+        },
+        {
+          "text": "2026-11-05T10:00:21Z WARN retrying webhook delivery (attempt 3)",
+          "category": "warning",
+          "category_confidence": "0.96",
+          "decision": "Page on-call",
+          "decision_confidence": "0.70",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"db connection refused after 3 retries\"; Laya preferred Open a ticket",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:22Z ERROR Unhandled exception: TypeError cannot read property id of undefined",
+          "category": "error",
+          "category_confidence": "0.99",
+          "decision": "Page on-call",
+          "decision_confidence": "0.63",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"request failed with status 500 internal server error\"; Laya preferred Open a ticket",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:30Z INFO health check ok",
+          "category": "info",
+          "category_confidence": "1.00",
+          "decision": "Ignore",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"health check ok\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:31Z WARN disk usage at 91% on /data",
+          "category": "warning",
+          "category_confidence": "1.00",
+          "decision": "Open a ticket",
+          "decision_confidence": "0.99",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"disk usage at 85% on /var\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:40Z ERROR request failed with status 503 from billing service",
+          "category": "error",
+          "category_confidence": "0.98",
+          "decision": "Page on-call",
+          "decision_confidence": "0.99",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"request failed with status 500 internal server error\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:41Z INFO scheduled report emailed to 14 users",
+          "category": "info",
+          "category_confidence": "0.82",
+          "decision": "Ignore",
+          "decision_confidence": "0.70",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"user 1042 logged in\"; Laya preferred Open a ticket",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:47Z WARN api key for partner X expires in 3 days",
+          "category": "warning",
+          "category_confidence": "0.58",
+          "decision": "Open a ticket",
+          "decision_confidence": "0.87",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"certificate expires in 14 days\"; Laya agrees",
+          "needs_review": "yes"
+        },
+        {
+          "text": "2026-11-05T10:00:52Z ERROR job export-csv crashed: out of memory",
+          "category": "error",
+          "category_confidence": "0.97",
+          "decision": "Page on-call",
+          "decision_confidence": "0.91",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"FATAL out of memory, process killed\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:00:58Z INFO user 5521 logged out",
+          "category": "info",
+          "category_confidence": "1.00",
+          "decision": "Ignore",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"user 1042 logged in\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:01:03Z WARN slow query 3100ms on invoices table",
+          "category": "warning",
+          "category_confidence": "1.00",
+          "decision": "Open a ticket",
+          "decision_confidence": "0.98",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"slow query took 2400ms\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:01:09Z INFO deployed version 2.3.2",
+          "category": "info",
+          "category_confidence": "0.98",
+          "decision": "Ignore",
+          "decision_confidence": "0.50",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"user 1042 logged in\"; Laya agrees",
+          "needs_review": "yes"
+        },
+        {
+          "text": "2026-11-05T10:01:15Z ERROR TLS handshake failed with upstream auth service",
+          "category": "error",
+          "category_confidence": "0.98",
+          "decision": "Page on-call",
+          "decision_confidence": "0.82",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"db connection refused after 3 retries\"; Laya preferred Open a ticket",
+          "needs_review": "no"
+        },
+        {
+          "text": "2026-11-05T10:01:20Z INFO 1,204 events processed in batch 77",
+          "category": "info",
+          "category_confidence": "0.56",
+          "decision": "Open a ticket",
+          "decision_confidence": "0.48",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"slow query took 2400ms\"; Laya preferred Ignore",
+          "needs_review": "yes"
+        }
+      ]
+    },
+    "reviews": {
+      "name": "Review follow-up",
+      "rows": [
+        {
+          "text": "The battery life is amazing, I recommend it to everyone",
+          "category": "positive",
+          "category_confidence": "0.99",
+          "decision": "Share with the team",
+          "decision_confidence": "0.92",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"absolutely love it, works perfectly\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Broke the first time I dropped it, terrible build",
+          "category": "negative",
+          "category_confidence": "0.99",
+          "decision": "Reply personally",
+          "decision_confidence": "0.71",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"arrived broken and no one answers\"; Laya agrees",
+          "needs_review": "no"
+        },
+        {
+          "text": "Package came in a brown box",
+          "category": "neutral",
+          "category_confidence": "0.70",
+          "decision": "No action",
+          "decision_confidence": "0.56",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"arrived on Tuesday as expected\"; Laya agrees",
+          "needs_review": "yes"
+        },
+        {
+          "text": "Pretty good overall but the strap feels cheap",
+          "category": "neutral",
+          "category_confidence": "0.99",
+          "decision": "No action",
+          "decision_confidence": "0.99",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"it is okay for the price\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Customer service refused my refund, never buying again",
+          "category": "negative",
+          "category_confidence": "1.00",
+          "decision": "Reply personally",
+          "decision_confidence": "1.00",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"customer service refused my refund\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "Exactly as described",
+          "category": "neutral",
+          "category_confidence": "0.69",
+          "decision": "No action",
+          "decision_confidence": "0.95",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"does what it says\"",
+          "needs_review": "no"
+        },
+        {
+          "text": "I love the colors and the sound is excellent",
+          "category": "positive",
+          "category_confidence": "0.91",
+          "decision": "Share with the team",
+          "decision_confidence": "0.75",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"best purchase this year\"; Laya agrees",
+          "needs_review": "no"
+        },
+        {
+          "text": "Not worth it, waste of money",
+          "category": "negative",
+          "category_confidence": "1.00",
+          "decision": "Reply personally",
+          "decision_confidence": "0.47",
+          "decided_by": "words + meaning + Laya",
+          "reason": "closest example \"arrived broken and no one answers\"; Laya preferred No action",
+          "needs_review": "yes"
+        },
+        {
+          "text": "It works",
+          "category": "positive",
+          "category_confidence": "0.60",
+          "decision": "No action",
+          "decision_confidence": "0.98",
+          "decided_by": "words + meaning",
+          "reason": "closest example \"does what it says\"",
+          "needs_review": "yes"
+        }
+      ]
+    }
+  }
+}

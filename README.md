@@ -4,57 +4,67 @@
 
 # classify
 
-**Teach it five examples. Label everything else.**
+**Hand it the spreadsheet. Get the decisions back.**
 
-Classify any data in your browser: name your labels, give a few examples, drop in a CSV, Excel sheet, JSON or log file, and watch every row get labelled live, with the reason for each label.<br />
-No server, no upload, no API key.
+Teach it your categories and decisions with a few examples. It goes through your file row by row, fills in the answers, flags what a person should check, and gives you back the same file with new columns. Everything runs in your browser.
 
 [Live app](https://shubhamcodess.github.io/classify/) · [Report an issue](https://github.com/shubhamcodess/classify/issues/new)
-
-<img src="docs/screenshot.png" alt="classify results: label distribution, live table and per-row explanation" width="900" />
 
 </div>
 
 ## How it works
 
-1. **Teach.** Create labels. Each has a name, a few examples (one per line), an optional description and optional keyword rules. Start from a preset (log severity, support tickets, review sentiment) or from blank.
-2. **Add data.** Drop a file or paste text:
+1. **Write a playbook.** Categories, the decisions you take, and rules that must always hold, such as "billing over $500 goes to a person".
+2. **Drop a file.** Excel, CSV, TSV, JSON, JSONL or logs. Title rows, blank lines, empty columns, other separators and multiple sheets are handled.
+3. **Review.** Unsure rows wait in a queue, each with its reason. Your corrections become training examples.
+4. **Download.** Excel comes back as the same workbook: other sheets, formatting and formulas stay, and these columns are added: `category`, `category_confidence`, `decision`, `decision_confidence`, `decided_by`, `reason`, `needs_review`. Macros (`.xlsm`) and charts may not survive; `.xls` and `.ods` come back as a new `.xlsx`.
 
-   | Format | How rows are read |
-   | --- | --- |
-   | `.csv` `.tsv` | header row + rows (quotes, commas and newlines in cells handled) |
-   | `.xlsx` `.xls` `.ods` | first sheet, header row + rows |
-   | `.json` | array of objects or strings (also `{ "data": [...] }`) |
-   | `.jsonl` `.ndjson` | one JSON value per line |
-   | `.log` `.txt`, anything else | one row per line |
+5. **Come back later.** Save a run as a project: the file, results and corrections stay in this browser, and later changes save automatically.
 
-   Text columns are picked automatically; tick or untick columns to choose what gets classified.
-3. **Results.** Rows stream into the table as they are labelled, with a live label distribution. Click a row to see the probability for every label, the words that pushed it, and whether a keyword rule fired. If it's wrong, click the right label: the row becomes a new example and everything re-classifies.
-4. **Download** the original columns plus `label`, `confidence` and `rule` as CSV or JSON.
+## How a row is decided
 
-## The model
+| Step | What it does | Cost |
+| --- | --- | --- |
+| Rules | Checked first and always win. Can use any column. | None |
+| Words | Naive Bayes over your examples. | None |
+| Meaning | `bge-small-en-v1.5`, closest example by cosine similarity. | 34 MB, once |
+| Laya | Convai Innovations' `laya-typed-decisions`, as a second opinion on unsure rows. | 847 MB, once; needs WebGPU to be practical |
 
-A multinomial Naive Bayes classifier written in plain JavaScript, with no ML library:
+Rows below your confidence threshold go to a person. Rows with nothing to read, like a "Total" footer, stay blank.
 
-- **Features:** words, word pairs and character trigrams. Numbers are reduced to their length so ids and timestamps don't dominate.
-- **Rules:** keywords give a strong boost to their label when the text contains them.
-- **State:** your labels and examples are saved in the browser (`localStorage`) and can be exported or imported as JSON. Training is a single counting pass, so it re-trains on every edit in milliseconds.
-- **Honesty check:** "self-test" is leave-one-out accuracy on your own examples.
-- **Speed:** about 30,000 short rows per second on a laptop. The Excel parser (SheetJS) loads only when you open a spreadsheet.
+Laya's own card says it is "a fast base to specialise, not a zero-shot decision engine". That matched our tests: the only existing browser build (multilingual) scored 27% on our tuning lines, so this app uses the fine-tuned checkpoint as one signal among three. See [scripts/laya-export](scripts/laya-export/README.md) to publish its browser build, which the Thorough engine needs.
 
-It works best when labels differ in vocabulary (log levels, ticket topics, categories, sentiment). It does not understand meaning the way a large language model does, so add examples for the cases it gets wrong.
+## Measured accuracy
+
+`npm run bench` trains on a few examples and tests on lines kept aside. Mixing weights were chosen on separate tuning lines before the test set was run. The sets are small and hand-labelled, so treat small differences as noise, and test on your own data.
+
+| Task | Lines | Words | + Meaning | Laya alone | All three |
+| --- | --- | --- | --- | --- | --- |
+| Ticket decisions (untouched test set) | 45 | 73% | 80% | 71% | **87%** |
+| Ticket categories | 29 | 83% | 90% | 86% | **93%** |
+| Log severity | 30 | 53% | 70% | 77% | **70%** |
+| Review sentiment | 18 | 56% | 94% | 89% | **100%** |
+
+On ticket decisions with all three, at 80% confidence or above, 53% of rows are decided automatically at 96% accuracy. The rest go to review. Combining is not always better: on log severity, Laya alone beat all three.
+
+## Privacy
+
+Your files never leave the tab. The only network requests are downloads you ask for: model files from Hugging Face and the ONNX runtime from jsDelivr. Models are stored in the browser's private file system, projects in IndexedDB and playbooks in local storage.
+
+Rows are untrusted input. A row can try to talk a model into an answer, but it can only pick from your options, and rules run first. Use rules for anything that must never be wrong.
 
 ## Run locally
 
 ```bash
 npm ci
 npm run dev        # http://localhost:5173
-npm test           # model and parser tests
-npm run build      # static site in dist/
+npm test
+npm run build
+LAYA_REPO=your/repo npm run bench   # or LAYA_LOCAL=path/ ; without Laya, those columns are skipped
 ```
 
-Pushing to `main` deploys to GitHub Pages through `.github/workflows/pages.yml` (one-time: Settings → Pages → Source: GitHub Actions).
+Pushing to `main` deploys to GitHub Pages through `.github/workflows/pages.yml`.
 
 ## License
 
-MIT © 2026 [Shubham Prakash](https://www.linkedin.com/in/shubham-prakash-dev/)
+MIT © 2026 [Shubham Prakash](https://www.linkedin.com/in/shubham-prakash-dev/). Laya is Apache-2.0 by Convai Innovations; bge-small-en-v1.5 is MIT by BAAI.

@@ -72,7 +72,7 @@ function logLik(c, k, V) {
  * Classify one text. Returns label, confidence (0..1), per-label probabilities,
  * the rule that fired (if any) and the features that pushed it toward the label.
  */
-export function classify(model, text, { ruleBoost = 6 } = {}) {
+export function classify(model, text, { ruleBoost = 6, sims = null, nbWeight = 1, simWeight = 0 } = {}) {
   const { classes } = model;
   if (!classes.length) return null;
   const V = Math.max(model.vocabSize, 1);
@@ -82,12 +82,15 @@ export function classify(model, text, { ruleBoost = 6 } = {}) {
     let s = c.prior;
     for (const [k, v] of feats) s += v * logLik(c, k, V);
     const hit = c.keywords.find((kw) => lower.includes(kw));
-    return { s: hit ? s + ruleBoost : s, hit };
+    return { s, hit };
   });
-  // softmax, scaled so long texts don't saturate to 100% instantly
+  // Logit per label. The Naive Bayes part is scaled by text length so long rows don't saturate;
+  // the optional embedding similarity (cosine, 0..1) is added with its own weight; a keyword rule
+  // is a fixed boost on top.
   const n = Math.max(1, Math.sqrt([...feats.values()].reduce((a, b) => a + b, 0)));
-  const max = Math.max(...scores.map((x) => x.s / n));
-  const exps = scores.map((x) => Math.exp(x.s / n - max));
+  const z = scores.map((x, i) => nbWeight * (x.s / n) + (sims ? simWeight * sims[i] : 0) + (x.hit ? ruleBoost / n : 0));
+  const max = Math.max(...z);
+  const exps = z.map((v) => Math.exp(v - max));
   const sum = exps.reduce((a, b) => a + b, 0);
   const probs = exps.map((e) => e / sum);
   let best = 0;
