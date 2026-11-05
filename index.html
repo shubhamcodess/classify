@@ -43,84 +43,90 @@
     </header>
 
     <main class="frame" id="top">
-      <section class="hero hero--app">
-        <a class="pill" href="https://github.com/shubhamcodess/classify"><span>in your browser<span class="pill__more"> · nothing uploaded · open source</span></span><em>MIT</em></a>
-        <h1>Teach it five examples. <span class="cut">Label</span> everything else.</h1>
-        <p class="hero__sub">Name your labels, give a few examples of each, then drop in a CSV, Excel sheet, JSON or log file. A small model trains in milliseconds right here, labels every row live, shows why, and lets you download the result.</p>
-      </section>
-
-      <!-- 1. TEACH -->
-      <section class="sec app-sec" id="teach">
-        <div class="step"><span class="step__n">1</span><div><h2>Teach</h2><p class="sub">Each label needs a name and a few examples. Keywords are hard rules: a row containing one leans strongly to that label.</p></div></div>
-        <div class="presets cap">
-          <span>start from</span>
+      <section class="intro">
+        <div>
+          <h1>Teach it five examples. <span class="hl">Label everything else.</span></h1>
+          <p class="intro__sub">Labels and a few examples in, any CSV, Excel, JSON or log file classified live. Runs entirely in your browser.</p>
+        </div>
+        <div class="presets">
+          <span class="cap">start from</span>
           <button class="chip" data-preset="logs">Log severity</button>
           <button class="chip" data-preset="tickets">Support tickets</button>
           <button class="chip" data-preset="sentiment">Review sentiment</button>
           <button class="chip" data-preset="blank">Blank</button>
         </div>
-        <div class="teach">
-          <div>
+      </section>
+
+      <div class="ws">
+        <!-- 1. TEACH -->
+        <section class="pane" id="teach" aria-label="Teach">
+          <header class="pane__head"><span class="step" data-step="1">1</span><h2>Teach</h2><span class="cap pane__meta" data-saved>saved in this browser</span></header>
+          <div class="pane__body">
             <div class="labels" data-labels></div>
-            <button type="button" class="btn btn--line add-label" data-add-label>+ Add label</button>
+            <button type="button" class="add" data-add-label>+ Add label</button>
+            <p class="cap hint">Keywords are hard rules: a row containing one leans strongly to that label.</p>
           </div>
-          <aside class="state">
-            <div class="state__head"><h3>Model state</h3><span class="cap" data-saved>saved in this browser</span></div>
-            <dl class="state__stats" data-stats></dl>
-            <div class="learned" data-learned></div>
-            <div class="try">
-              <label class="cap" for="try">try a sentence</label>
-              <input id="try" class="input" data-try placeholder="e.g. payment service timeout after 30s" autocomplete="off" />
-              <div class="try__out" data-try-out></div>
-            </div>
-            <div class="state__btns">
-              <button class="copy" data-export>Export model</button>
-              <label class="copy">Import<input type="file" accept=".json" data-import hidden /></label>
-            </div>
-          </aside>
-        </div>
-      </section>
+        </section>
 
-      <!-- 2. DATA -->
-      <section class="sec app-sec" id="data">
-        <div class="step"><span class="step__n">2</span><div><h2>Add data</h2><p class="sub">CSV, TSV, Excel (.xlsx, .xls, .ods), JSON, JSONL, or any log/text file (one row per line). Files never leave this tab.</p></div></div>
-        <label class="drop" data-drop>
-          <input type="file" data-file hidden accept=".csv,.tsv,.tab,.xlsx,.xlsm,.xls,.ods,.json,.jsonl,.ndjson,.log,.txt,text/*" />
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0l-4 4m4-4l4 4M5 15v3a2 2 0 002 2h10a2 2 0 002-2v-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <b>Drop a file here, or click to choose</b>
-          <span class="cap">or <button type="button" class="link" data-sample>use the sample data</button> · <button type="button" class="link" data-paste-toggle>paste text</button></span>
-        </label>
-        <div class="paste" data-paste hidden>
-          <textarea class="input" rows="6" data-paste-text placeholder="One item per line…"></textarea>
-          <button class="btn btn--line" data-paste-go>Use pasted text</button>
-        </div>
-        <div class="dataset" data-dataset hidden>
-          <div class="dataset__info"><b data-ds-name></b><span class="cap" data-ds-meta></span></div>
-          <div class="cols"><span class="cap">classify using</span><div class="cols__list" data-cols></div></div>
-        </div>
-      </section>
-
-      <!-- 3. RESULTS -->
-      <section class="sec app-sec" id="results">
-        <div class="step"><span class="step__n">3</span><div><h2>Results</h2><p class="sub">Rows are labelled as they stream in. Click a row to see why, and correct it to teach the model.</p></div></div>
-        <div class="empty cap" data-empty>Add data in step 2 to see results.</div>
-        <div class="results" data-results hidden>
-          <div class="progress"><div class="progress__bar"><i data-progress></i></div><span class="cap" data-progress-text></span></div>
-          <div class="dist" data-dist></div>
-          <div class="results__bar">
-            <div class="filters cap" data-filters></div>
-            <div class="results__dl">
-              <label class="cap toggle"><input type="checkbox" data-unsure /> unsure only (&lt; 60%)</label>
-              <button class="btn btn--line" data-dl="csv">Download CSV</button>
-              <button class="btn btn--line" data-dl="json">JSON</button>
+        <!-- 2 + 3. DATA & RESULTS -->
+        <section class="pane pane--main" id="data" aria-label="Data and results" data-drop>
+          <header class="pane__head">
+            <span class="step" data-step="2">2</span><h2>Data</h2>
+            <div class="toolbar">
+              <label class="tb tb--solid">Upload file<input type="file" data-file hidden accept=".csv,.tsv,.tab,.xlsx,.xlsm,.xls,.ods,.json,.jsonl,.ndjson,.log,.txt,text/*" /></label>
+              <button class="tb" data-sample>Sample</button>
+              <button class="tb" data-paste-toggle>Paste</button>
             </div>
+          </header>
+          <div class="paste" data-paste hidden>
+            <textarea class="input" rows="4" data-paste-text placeholder="One item per line…"></textarea>
+            <button class="tb tb--solid" data-paste-go>Classify pasted text</button>
           </div>
-          <div class="results__grid">
+          <div class="dataset" data-dataset hidden>
+            <b data-ds-name></b><span class="cap" data-ds-meta></span>
+            <span class="cap dataset__sep">classify using</span><span class="cols" data-cols></span>
+          </div>
+
+          <div class="empty" data-empty>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4m0 0l-4 4m4-4l4 4M5 15v3a2 2 0 002 2h10a2 2 0 002-2v-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <b>Drop a file anywhere here</b>
+            <span class="cap">CSV · TSV · Excel · JSON · JSONL · logs · text. Nothing leaves this tab.</span>
+          </div>
+
+          <div class="results" data-results hidden>
+            <div class="results__top">
+              <span class="step" data-step="3">3</span><h2>Results</h2>
+              <span class="cap" data-progress-text></span>
+              <div class="toolbar">
+                <label class="cap toggle"><input type="checkbox" data-unsure /> unsure only</label>
+                <button class="tb" data-dl="csv">CSV ↓</button>
+                <button class="tb" data-dl="json">JSON ↓</button>
+              </div>
+            </div>
+            <div class="progress"><i data-progress></i></div>
+            <div class="dist" data-dist></div>
             <div class="table-wrap"><table class="table"><thead><tr><th>#</th><th>text</th><th>label</th><th>confidence</th></tr></thead><tbody data-rows></tbody></table><p class="cap table__note" data-note></p></div>
-            <aside class="why" data-why><p class="cap">Select a row to see how it was classified.</p></aside>
           </div>
-        </div>
-      </section>
+        </section>
+
+        <!-- INSPECTOR -->
+        <aside class="pane" aria-label="Model and explanation">
+          <header class="pane__head"><span class="step step--dot"></span><h2>Model</h2></header>
+          <div class="pane__body">
+            <dl class="stats" data-stats></dl>
+            <div class="try">
+              <input id="try" class="input" data-try placeholder="Try a sentence…" autocomplete="off" />
+              <div class="card" data-try-out></div>
+            </div>
+            <div class="card why" data-why><p class="cap">Select a row to see why it got its label.</p></div>
+            <div class="learned" data-learned></div>
+            <div class="row-btns">
+              <button class="tb" data-export>Export model</button>
+              <label class="tb">Import<input type="file" accept=".json" data-import hidden /></label>
+            </div>
+          </div>
+        </aside>
+      </div>
     </main>
 
     <footer class="frame foot-wrap">

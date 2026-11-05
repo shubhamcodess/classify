@@ -44,22 +44,40 @@ const save = () => {
 };
 
 /* ---------------- teach ---------------- */
+let openLab = 0; // one label expanded at a time keeps the list compact
+const exCount = (l) => l.examples.filter((x) => x.trim()).length;
+const labMeta = (l) => `${exCount(l)} example${exCount(l) === 1 ? "" : "s"}${l.keywords.trim() ? " · rules" : ""}`;
 function renderLabels() {
   $("[data-labels]").innerHTML = state.labels
-    .map(
-      (l, i) => `
-    <div class="lab" data-i="${i}" style="--c:${COLORS[i % COLORS.length]}">
-      <div class="lab__top">
-        <i class="dot"></i>
+    .map((l, i) => {
+      const open = i === openLab;
+      return `
+    <div class="lab ${open ? "is-open" : ""}" data-i="${i}" style="--c:${COLORS[i % COLORS.length]}">
+      <button type="button" class="lab__head" data-toggle aria-expanded="${open}">
+        <i class="dot"></i><span class="lab__title">${esc(l.name) || "<em>untitled</em>"}</span>
+        <span class="cap lab__meta">${labMeta(l)}</span>
+        <svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      ${
+        open
+          ? `<div class="lab__body">
         <input class="input lab__name" data-f="name" value="${esc(l.name)}" placeholder="label name" aria-label="Label name" />
-        <button class="lab__del" data-del title="Remove label" aria-label="Remove label">×</button>
-      </div>
-      <input class="input" data-f="description" value="${esc(l.description)}" placeholder="What belongs here (optional, helps a little)" aria-label="Description" />
-      <input class="input mono" data-f="keywords" value="${esc(l.keywords)}" placeholder="keyword rules, comma separated (optional)" aria-label="Keyword rules" />
-      <textarea class="input" data-f="examples" rows="4" placeholder="Examples, one per line" aria-label="Examples">${esc(l.examples.join("\n"))}</textarea>
-    </div>`,
-    )
+        <textarea class="input" data-f="examples" rows="6" placeholder="Examples, one per line" aria-label="Examples">${esc(l.examples.join("\n"))}</textarea>
+        <input class="input mono" data-f="keywords" value="${esc(l.keywords)}" placeholder="keyword rules, comma separated" aria-label="Keyword rules" />
+        <input class="input" data-f="description" value="${esc(l.description)}" placeholder="description (optional)" aria-label="Description" />
+        <button type="button" class="lab__del" data-del>Remove label</button>
+      </div>`
+          : ""
+      }
+    </div>`;
+    })
     .join("");
+}
+
+function steps() {
+  $('[data-step="1"]').classList.toggle("is-done", model.classes.length >= 2);
+  $('[data-step="2"]').classList.toggle("is-done", Boolean(data));
+  $('[data-step="3"]')?.classList.toggle("is-done", Boolean(data) && results.length > 0 && results.every(Boolean));
 }
 
 let retrainTimer = 0;
@@ -70,6 +88,7 @@ function retrain({ rerun = true } = {}) {
     save();
     renderState();
     runTry();
+    steps();
     if (rerun && data) run();
   }, 180);
 }
@@ -128,16 +147,27 @@ $("[data-labels]").addEventListener("input", (e) => {
   if (!lab || !f) return;
   const l = state.labels[Number(lab.dataset.i)];
   l[f] = f === "examples" ? e.target.value.split("\n") : e.target.value;
+  lab.querySelector(".lab__title").textContent = l.name || "untitled";
+  lab.querySelector(".lab__meta").textContent = labMeta(l);
   retrain();
 });
 $("[data-labels]").addEventListener("click", (e) => {
-  if (!e.target.closest("[data-del]")) return;
-  state.labels.splice(Number(e.target.closest(".lab").dataset.i), 1);
-  renderLabels();
-  retrain();
+  const lab = e.target.closest(".lab");
+  if (!lab) return;
+  const i = Number(lab.dataset.i);
+  if (e.target.closest("[data-toggle]")) {
+    openLab = openLab === i ? -1 : i;
+    renderLabels();
+  } else if (e.target.closest("[data-del]")) {
+    state.labels.splice(i, 1);
+    openLab = -1;
+    renderLabels();
+    retrain();
+  }
 });
 $("[data-add-label]").addEventListener("click", () => {
   state.labels.push(blank());
+  openLab = state.labels.length - 1;
   renderLabels();
   $$(".lab__name").at(-1).focus();
 });
@@ -145,6 +175,8 @@ $$("[data-preset]").forEach((b) =>
   b.addEventListener("click", () => {
     const p = b.dataset.preset;
     state = { preset: p, labels: p === "blank" ? [blank(), blank()] : clone(PRESETS[p].labels) };
+    openLab = 0;
+    $$("[data-preset]").forEach((x) => x.classList.toggle("is-on", x === b));
     renderLabels();
     model = train(state.labels); // synchronously, so the sample runs on the new labels
     save();
@@ -181,6 +213,7 @@ function setData(d, name) {
   selected = -1;
   filter = null;
   $("[data-dataset]").hidden = false;
+  $("[data-paste]").hidden = true;
   $("[data-ds-name]").textContent = name;
   $("[data-ds-meta]").textContent = `${d.rows.length.toLocaleString()} rows · ${d.columns.length} column${d.columns.length === 1 ? "" : "s"}${d.sheet ? ` · sheet “${d.sheet}”` : ""}`;
   $("[data-cols]").innerHTML = d.columns
@@ -205,7 +238,6 @@ async function openFile(file) {
   $("[data-ds-meta]").textContent = "reading…";
   try {
     setData(await parseFile(file), file.name);
-    $("#results").scrollIntoView({ behavior: "smooth" });
   } catch (err) {
     alert(`Could not read ${file.name}: ${err.message}`);
   }
@@ -261,6 +293,7 @@ async function run() {
 function progress(done, ms) {
   const n = data.rows.length;
   $("[data-progress]").style.setProperty("--k", n ? done / n : 1);
+  $("[data-progress]").parentElement.classList.toggle("is-done", done === n);
   $("[data-progress-text]").textContent = `${done.toLocaleString()} / ${n.toLocaleString()} rows · ${Math.round(ms)} ms${done === n ? " · done" : ""}`;
 }
 
@@ -269,15 +302,17 @@ function renderResults() {
   const counts = new Map(model.classes.map((c) => [c.name, 0]));
   for (const r of done) counts.set(r.label, (counts.get(r.label) || 0) + 1);
   const total = done.length || 1;
-  $("[data-dist]").innerHTML = [...counts]
-    .map(
-      ([label, n]) => `<button class="dist__row ${filter === label ? "is-on" : ""}" data-filter="${esc(label)}">
-      <span class="tag" style="--c:${colorOf(label)}">${esc(label)}</span>
-      <span class="dist__bar"><i style="--k:${n / total};--c:${colorOf(label)}"></i></span>
-      <b>${n.toLocaleString()}</b><span class="cap">${pct(n / total)}</span></button>`,
-    )
-    .join("");
-  $("[data-filters]").textContent = filter ? `showing “${filter}” · click it again to clear` : "click a label to filter";
+  const entries = [...counts];
+  $("[data-dist]").innerHTML =
+    `<div class="stack">${entries
+      .filter(([, n]) => n)
+      .map(([label, n]) => `<i style="flex:${n};--c:${colorOf(label)}" title="${esc(label)}: ${n}"></i>`)
+      .join("")}</div><div class="legend">${entries
+      .map(
+        ([label, n]) => `<button class="leg ${filter === label ? "is-on" : ""} ${filter && filter !== label ? "is-dim" : ""}" data-filter="${esc(label)}">
+        <i class="dot" style="--c:${colorOf(label)}"></i>${esc(label)}<b>${n.toLocaleString()}</b><span>${pct(n / total)}</span></button>`,
+      )
+      .join("")}</div>`;
 
   const idx = [];
   for (let i = 0; i < results.length && idx.length < SHOW; i++) {
@@ -298,6 +333,7 @@ function renderResults() {
   const matching = results.filter((r) => r && (!filter || r.label === filter) && (!unsureOnly || r.confidence < 0.6)).length;
   $("[data-note]").textContent = matching > SHOW ? `Showing the first ${SHOW} of ${matching.toLocaleString()} rows. Downloads include all rows.` : "";
   if (selected >= 0 && results[selected]) showWhy(selected);
+  steps();
 }
 
 function showWhy(i) {
@@ -431,4 +467,6 @@ $(".theme").addEventListener("click", () => {
 /* ---------------- start ---------------- */
 renderLabels();
 renderState();
+steps();
+$$("[data-preset]").forEach((x) => x.classList.toggle("is-on", x.dataset.preset === state.preset));
 if (state.preset && PRESETS[state.preset]) loadSample();
